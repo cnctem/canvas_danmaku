@@ -209,7 +209,7 @@ abstract final class DmUtils {
     } else {
       rect = Rect.fromLTRB(0, 0, totalWidth, totalHeight);
 
-      final imgLongestSide = totalWidth * devicePixelRatio;
+      final imgLongestSide = max(totalWidth, totalHeight) * devicePixelRatio;
       if (imgLongestSide > maxRasterizeSize) {
         final scale = maxRasterizeSize / imgLongestSide;
         adjustDevicePixelRatio = scale;
@@ -274,11 +274,5 @@ abstract final class DmUtils {
     final ab = a > b ? a : b;
     final cd = c > d ? c : d;
     return ab > cd ? ab : cd;
-  }
-
-  static void tweenAdd(Tween<double> tween, double value) {
-    tween
-      ..begin = tween.begin! + value
-      ..end = tween.end! + value;
   }
 }
