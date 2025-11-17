@@ -124,6 +124,7 @@ class _DanmakuScreenState<T> extends State<DanmakuScreen<T>>
           text: '弹幕',
           style: TextStyle(
             fontSize: _option.fontSize,
+            fontFamily: _option.fontFamily,
             height: _option.lineHeight,
           ),
         ),
@@ -149,6 +150,7 @@ class _DanmakuScreenState<T> extends State<DanmakuScreen<T>>
       content: content,
       fontSize: _option.fontSize,
       fontWeight: _option.fontWeight,
+      fontFamily: _option.fontFamily,
     );
 
     final danmakuWidth = (content.selfSend
@@ -168,6 +170,7 @@ class _DanmakuScreenState<T> extends State<DanmakuScreen<T>>
           content: content,
           fontSize: _option.fontSize,
           fontWeight: _option.fontWeight,
+          fontFamily: _option.fontFamily,
           strokeWidth: _option.strokeWidth,
           devicePixelRatio: devicePixelRatio,
         ));
@@ -258,6 +261,7 @@ class _DanmakuScreenState<T> extends State<DanmakuScreen<T>>
               image: DmUtils.recordSpecialDanmakuImg(
                 content: content as SpecialDanmakuContentItem,
                 fontWeight: _option.fontWeight,
+                fontFamily: _option.fontFamily,
                 strokeWidth: _option.strokeWidth,
                 devicePixelRatio: devicePixelRatio,
               )),

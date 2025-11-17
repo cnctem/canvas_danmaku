@@ -55,6 +55,7 @@ class DanmakuItem<T> {
   void drawParagraphIfNeeded(
     double fontSize,
     int fontWeight,
+    String? fontFamily,
     double strokeWidth,
     double devicePixelRatio,
   ) {
@@ -63,12 +64,14 @@ class DanmakuItem<T> {
         content: content,
         fontSize: fontSize,
         fontWeight: fontWeight,
+        fontFamily: fontFamily,
       );
       image = DmUtils.recordDanmakuImage(
         contentParagraph: paragraph,
         content: content,
         fontSize: fontSize,
         fontWeight: fontWeight,
+        fontFamily: fontFamily,
         strokeWidth: strokeWidth,
         devicePixelRatio: devicePixelRatio,
       );

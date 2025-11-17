@@ -30,6 +30,7 @@ final class ScrollDanmakuPainter extends BaseDanmakuPainter {
     item.drawParagraphIfNeeded(
       fontSize,
       fontWeight,
+      null, // fontFamily is not needed here as the image is already created
       strokeWidth,
       devicePixelRatio,
     );

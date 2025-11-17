@@ -32,6 +32,7 @@ final class StaticDanmakuPainter extends CustomPainter {
         ..drawParagraphIfNeeded(
           fontSize,
           fontWeight,
+          null, // fontFamily is not needed here as the image is already created
           strokeWidth,
           devicePixelRatio,
         )

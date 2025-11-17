@@ -64,6 +64,9 @@ class _HomePageState extends State<HomePage> {
   /// 弹幕粗细
   int _fontWeight = 4;
 
+  /// 弹幕字体族
+  String? _fontFamily = null;
+
   /// 隐藏滚动弹幕
   bool _hideScroll = false;
 
@@ -463,6 +466,7 @@ class _HomePageState extends State<HomePage> {
                       option: DanmakuOption(
                         fontSize: _fontSize,
                         fontWeight: _fontWeight,
+                        fontFamily: _fontFamily,
                         duration: _duration,
                         staticDuration: _staticDuration,
                         strokeWidth: _strokeWidth,
@@ -530,6 +534,38 @@ class _HomePageState extends State<HomePage> {
                               _controller!.option.copyWith(
                                 strokeWidth: _strokeWidth,
                               ),
+                            );
+                            (context as Element).markNeedsBuild();
+                          }
+                        },
+                      ),
+                    ],
+                  );
+                },
+              ),
+              Builder(
+                builder: (context) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Font Family : $_fontFamily"),
+                      DropdownButton<String>(
+                        value: _fontFamily,
+                        items: const [
+                          DropdownMenuItem(value: null, child: Text('Default')),
+                          DropdownMenuItem(value: 'Arial', child: Text('Arial')),
+                          DropdownMenuItem(value: 'Helvetica', child: Text('Helvetica')),
+                          DropdownMenuItem(value: 'Times New Roman', child: Text('Times New Roman')),
+                          DropdownMenuItem(value: 'Courier New', child: Text('Courier New')),
+                          DropdownMenuItem(value: 'Georgia', child: Text('Georgia')),
+                          DropdownMenuItem(value: 'Verdana', child: Text('Verdana')),
+                          DropdownMenuItem(value: 'Comic Sans MS', child: Text('Comic Sans MS')),
+                        ],
+                        onChanged: (value) {
+                          if (_controller != null) {
+                            _fontFamily = value;
+                            _controller!.updateOption(
+                              _controller!.option.copyWith(fontFamily: _fontFamily),
                             );
                             (context as Element).markNeedsBuild();
                           }

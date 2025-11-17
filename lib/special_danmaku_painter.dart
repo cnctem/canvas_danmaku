@@ -68,6 +68,7 @@ final class SpecialDanmakuPainter extends BaseDanmakuPainter {
       dm.image ??= DmUtils.recordSpecialDanmakuImg(
         content: item,
         fontWeight: fontWeight,
+        fontFamily: null, // fontFamily is not needed here as the image is already created
         strokeWidth: strokeWidth,
         devicePixelRatio: devicePixelRatio,
       ),

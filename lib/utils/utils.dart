@@ -32,10 +32,12 @@ abstract final class DmUtils {
     required DanmakuContentItem content,
     required double fontSize,
     required int fontWeight,
+    String? fontFamily,
   }) {
     final builder = ui.ParagraphBuilder(ui.ParagraphStyle(
       textAlign: TextAlign.left,
       fontWeight: FontWeight.values[fontWeight],
+      fontFamily: fontFamily,
       textDirection: TextDirection.ltr,
       maxLines: 1,
     ));
@@ -51,7 +53,11 @@ abstract final class DmUtils {
     }
 
     builder
-      ..pushStyle(ui.TextStyle(color: content.color, fontSize: fontSize))
+      ..pushStyle(ui.TextStyle(
+        color: content.color,
+        fontSize: fontSize,
+        fontFamily: fontFamily,
+      ))
       ..addText(content.text);
 
     return builder.build()
@@ -63,6 +69,7 @@ abstract final class DmUtils {
     required DanmakuContentItem content,
     required double fontSize,
     required int fontWeight,
+    String? fontFamily,
     required double strokeWidth,
     required double devicePixelRatio,
   }) {
@@ -81,6 +88,7 @@ abstract final class DmUtils {
       final builder = ui.ParagraphBuilder(ui.ParagraphStyle(
         textAlign: TextAlign.left,
         fontWeight: FontWeight.values[fontWeight],
+        fontFamily: fontFamily,
         textDirection: TextDirection.ltr,
         maxLines: 1,
       ));
@@ -108,7 +116,11 @@ abstract final class DmUtils {
       }
 
       builder
-        ..pushStyle(ui.TextStyle(fontSize: fontSize, foreground: strokePaint))
+        ..pushStyle(ui.TextStyle(
+          fontSize: fontSize,
+          foreground: strokePaint,
+          fontFamily: fontFamily,
+        ))
         ..addText(content.text);
 
       final strokeParagraph = builder.build()
@@ -137,18 +149,21 @@ abstract final class DmUtils {
   static ui.Image recordSpecialDanmakuImg({
     required SpecialDanmakuContentItem content,
     required int fontWeight,
+    String? fontFamily,
     required double strokeWidth,
     required double devicePixelRatio,
   }) {
     final builder = ui.ParagraphBuilder(ui.ParagraphStyle(
       textAlign: TextAlign.left,
       fontWeight: FontWeight.values[fontWeight],
+      fontFamily: fontFamily,
       textDirection: TextDirection.ltr,
       fontSize: content.fontSize,
     ))
       ..pushStyle(ui.TextStyle(
         color: content.color,
         fontSize: content.fontSize,
+        fontFamily: fontFamily,
         shadows: content.hasStroke
             ? [Shadow(color: Colors.black, blurRadius: strokeWidth)]
             : null,
