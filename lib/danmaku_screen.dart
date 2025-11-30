@@ -546,8 +546,7 @@ class _DanmakuScreenState<T> extends State<DanmakuScreen<T>>
                   1,
                 ),
                 RepaintBoundary.wrap(
-                  IgnorePointer(
-                      child: ValueListenableBuilder(
+                  ValueListenableBuilder(
                     valueListenable: _notifier, // 与滚动弹幕共用控制器
                     builder: (context, value, child) {
                       return CustomPaint(
@@ -565,7 +564,7 @@ class _DanmakuScreenState<T> extends State<DanmakuScreen<T>>
                         size: Size.infinite,
                       );
                     },
-                  )),
+                  ),
                   2,
                 ),
               ],
