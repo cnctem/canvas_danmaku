@@ -61,6 +61,9 @@ class _HomePageState extends State<HomePage> {
   /// 弹幕字号
   double _fontSize = (Platform.isIOS || Platform.isAndroid) ? 16 : 25;
 
+  /// 弹幕显示区域
+  double _area = 1.0;
+
   /// 弹幕粗细
   int _fontWeight = 4;
 
@@ -76,10 +79,14 @@ class _HomePageState extends State<HomePage> {
   /// 隐藏底部弹幕
   bool _hideBottom = false;
 
+  /// 隐藏高级弹幕
   bool _hideSpecial = false;
 
   /// 为字幕预留空间
   bool _safeArea = true;
+
+  /// 静态弹幕无法添加时作为滚动弹幕添加
+  bool _static2Scroll = false;
 
   late final dmPadding = EdgeInsets.zero;
   //  EdgeInsets.fromLTRB(
@@ -334,6 +341,46 @@ class _HomePageState extends State<HomePage> {
                   },
                 ),
                 TextButton(
+                  child: const Text('LongTop'),
+                  onPressed: () {
+                    _controller?.addDanmaku(
+                      DanmakuContentItem(
+                        "这是一条超长顶部弹幕。" * 10,
+                        color: getRandomColor(),
+                        // color: Colors.white,
+                        // isColorful: true,
+                        type: DanmakuItemType.top,
+                        extra: _random.nextInt(2147483647),
+                      ),
+                    );
+                  },
+                ),
+                TextButton(
+                  child: const Text('LongShort'),
+                  onPressed: () {
+                    _controller?.addDanmaku(
+                      DanmakuContentItem(
+                        "这是一条超长滚动弹幕。" * 10,
+                        color: getRandomColor(),
+                        // color: Colors.white,
+                        // isColorful: true,
+                        type: DanmakuItemType.scroll,
+                        extra: _random.nextInt(2147483647),
+                      ),
+                    );
+                    _controller?.addDanmaku(
+                      DanmakuContentItem(
+                        "这是一条短滚动弹幕",
+                        color: getRandomColor(),
+                        // color: Colors.white,
+                        // isColorful: true,
+                        type: DanmakuItemType.scroll,
+                        extra: _random.nextInt(2147483647),
+                      ),
+                    );
+                  },
+                ),
+                TextButton(
                   onPressed: loadXmlDmFromAsset,
                   child: const Text('XML'),
                 ),
@@ -381,40 +428,39 @@ class _HomePageState extends State<HomePage> {
               padding: dmPadding,
               child: Listener(
                 onPointerUp: (event) {
-                  return;
+                  // return;
                   if (_controller == null) return;
 
-                  // final items = _controller
-                  //     !.findDanmaku(event.localPosition)
-                  //     .toList();
-                  // if (items != null && items.isNotEmpty) {
-                  //   for (var i in items) {
-                  //     i.suspend = true;
-                  //   }
-                  //   debugPrint(items.toString());
-                  // Future.delayed(const Duration(seconds: 3), () {
-                  //   for (var i in items) {
-                  //     i.suspend = false;
-                  //   }
-                  // });
-                  // }
+                  final items = _controller!
+                      .findDanmaku(event.localPosition)
+                      .toList();
+                  if (items.isNotEmpty) {
+                    for (var (_, i) in items) {
+                      i.suspend = true;
+                    }
+                    debugPrint(items.toString());
+                    Future.delayed(const Duration(seconds: 3), () {
+                      for (var (_, i) in items) {
+                        i.suspend = false;
+                      }
+                    });
+                  }
 
                   /// single
-                  final item = _controller!.findSingleDanmaku(
+                  final res = _controller!.findSingleDanmaku(
                     event.localPosition,
                   );
 
-                  if (item == null) {
+                  if (res == null) {
                     _removeOverlay();
-                  } else if (item != _suspendedDM) {
+                  } else if (res.$2 != _suspendedDM) {
+                    final (yPos, item) = res;
                     _removeOverlay();
                     item.suspend = true;
                     _suspendedDM = item;
                     print('danmaku id: ${item.content.extra}');
 
-                    final dy = item.content.type == DanmakuItemType.bottom
-                        ? _controller!.viewHeight - item.yPosition - item.height
-                        : item.yPosition;
+                    final dy = yPos;
                     final dySpacing =
                         event.position.dy - event.localPosition.dy;
                     final dxSpacing =
@@ -519,6 +565,7 @@ class _HomePageState extends State<HomePage> {
                         staticDuration: _staticDuration,
                         strokeWidth: _strokeWidth,
                         massiveMode: _massiveMode,
+                        static2Scroll: _static2Scroll,
                         hideScroll: _hideScroll,
                         hideTop: _hideTop,
                         hideBottom: _hideBottom,
@@ -690,6 +737,30 @@ class _HomePageState extends State<HomePage> {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Text("Area : $_area"),
+                      Slider(
+                        value: _area,
+                        min: 0.1,
+                        max: 1.0,
+                        onChanged: (e) {
+                          if (_controller != null) {
+                            _area = e;
+                            _controller!.updateOption(
+                              _controller!.option.copyWith(area: _area),
+                            );
+                            (context as Element).markNeedsBuild();
+                          }
+                        },
+                      ),
+                    ],
+                  );
+                },
+              ),
+              Builder(
+                builder: (context) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                       Text("Scroll Duration : $_duration"),
                       Slider(
                         value: _duration.toDouble(),
@@ -740,6 +811,22 @@ class _HomePageState extends State<HomePage> {
               Builder(
                 builder: (context) {
                   return SwitchListTile(
+                    title: const Text('scrollFixedVelocity'),
+                    value: _controller!.option.scrollFixedVelocity,
+                    onChanged: (e) {
+                      if (_controller != null) {
+                        _controller!.updateOption(
+                          _controller!.option.copyWith(scrollFixedVelocity: e),
+                        );
+                        (context as Element).markNeedsBuild();
+                      }
+                    },
+                  );
+                },
+              ),
+              Builder(
+                builder: (context) {
+                  return SwitchListTile(
                     title: const Text('MassiveMode'),
                     value: _massiveMode,
                     onChanged: (e) {
@@ -747,6 +834,23 @@ class _HomePageState extends State<HomePage> {
                         _massiveMode = e;
                         _controller!.updateOption(
                           _controller!.option.copyWith(massiveMode: e),
+                        );
+                        (context as Element).markNeedsBuild();
+                      }
+                    },
+                  );
+                },
+              ),
+              Builder(
+                builder: (context) {
+                  return SwitchListTile(
+                    title: const Text('Static2Scroll'),
+                    value: _static2Scroll,
+                    onChanged: (e) {
+                      if (_controller != null) {
+                        _static2Scroll = e;
+                        _controller!.updateOption(
+                          _controller!.option.copyWith(static2Scroll: e),
                         );
                         (context as Element).markNeedsBuild();
                       }
