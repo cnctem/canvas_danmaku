@@ -96,6 +96,8 @@ class _HomePageState extends State<HomePage> {
   //   _random.nextDouble() * 50 + 10,
   // );
 
+  double _viewWidth = 0;
+
   DanmakuItem? _suspendedDM;
   OverlayEntry? _overlayEntry;
   void _removeOverlay() {
@@ -472,7 +474,7 @@ class _HomePageState extends State<HomePage> {
                           left: clampDouble(
                             event.position.dx - overlayWidth / 2,
                             overlaySpacing + dxSpacing,
-                            _controller!.viewWidth -
+                            _viewWidth -
                                 overlayWidth -
                                 overlaySpacing +
                                 dxSpacing,
@@ -552,26 +554,32 @@ class _HomePageState extends State<HomePage> {
                   child: AnimatedOpacity(
                     opacity: _opacity,
                     duration: const Duration(milliseconds: 100),
-                    child: DanmakuScreen<int>(
-                      key: _danmuKey,
-                      createdController: (e) {
-                        _controller = e;
+                    child: LayoutBuilder(
+                      builder: (_, constrains) {
+                        _viewWidth = constrains.maxWidth;
+                        return DanmakuScreen<int>(
+                          key: _danmuKey,
+                          createdController: (e) {
+                            _controller = e;
+                          },
+                          option: DanmakuOption(
+                            fontSize: _fontSize,
+                            fontWeight: _fontWeight,
+                            fontFamily: _fontFamily,
+                            duration: _duration,
+                            staticDuration: _staticDuration,
+                            strokeWidth: _strokeWidth,
+                            massiveMode: _massiveMode,
+                            static2Scroll: _static2Scroll,
+                            hideScroll: _hideScroll,
+                            hideTop: _hideTop,
+                            hideBottom: _hideBottom,
+                            safeArea: _safeArea,
+                            lineHeight: _lineHeight,
+                          ),
+                          size: constrains.biggest,
+                        );
                       },
-                      option: DanmakuOption(
-                        fontSize: _fontSize,
-                        fontWeight: _fontWeight,
-                        fontFamily: _fontFamily,
-                        duration: _duration,
-                        staticDuration: _staticDuration,
-                        strokeWidth: _strokeWidth,
-                        massiveMode: _massiveMode,
-                        static2Scroll: _static2Scroll,
-                        hideScroll: _hideScroll,
-                        hideTop: _hideTop,
-                        hideBottom: _hideBottom,
-                        safeArea: _safeArea,
-                        lineHeight: _lineHeight,
-                      ),
                     ),
                   ),
                 ),
@@ -742,9 +750,10 @@ class _HomePageState extends State<HomePage> {
                         value: _area,
                         min: 0.1,
                         max: 1.0,
+                        divisions: 9,
                         onChanged: (e) {
                           if (_controller != null) {
-                            _area = e;
+                            _area = e.toPrecision(1);
                             _controller!.updateOption(
                               _controller!.option.copyWith(area: _area),
                             );
@@ -969,7 +978,7 @@ class _HomePageState extends State<HomePage> {
     int index = 0;
     final length = danmakus.length;
     _timer = Timer.periodic(const Duration(milliseconds: 200), (_) {
-      if (index > length || _controller == null) {
+      if (index >= length || _controller == null) {
         _stopTimer();
         return;
       }
@@ -1031,7 +1040,7 @@ class _HomePageState extends State<HomePage> {
     int index = 0;
     final length = items.length;
     _timer = Timer.periodic(const Duration(milliseconds: 200), (_) {
-      if (index > length || _controller == null) {
+      if (index >= length || _controller == null) {
         _stopTimer();
         return;
       }
@@ -1107,4 +1116,11 @@ class TrianglePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(TrianglePainter oldDelegate) => color != oldDelegate.color;
+}
+
+extension on double {
+  double toPrecision(int fractionDigits) {
+    final mod = pow(10, fractionDigits).toDouble();
+    return (this * mod).roundToDouble() / mod;
+  }
 }
