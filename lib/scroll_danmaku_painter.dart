@@ -17,7 +17,6 @@ final class ScrollDanmakuPainter extends BaseDanmakuPainter {
     required super.fontSize,
     required super.fontWeight,
     required super.strokeWidth,
-    required super.devicePixelRatio,
     required super.running,
     required super.tick,
     super.batchThreshold,
@@ -74,7 +73,6 @@ final class ScrollDanmakuPainter extends BaseDanmakuPainter {
       fontWeight,
       null, // fontFamily is not needed here as the image is already created
       strokeWidth,
-      devicePixelRatio,
     );
     if (!item.suspend) {
       final startPosition = size.width;
@@ -101,7 +99,6 @@ final class ScrollDanmakuPainter extends BaseDanmakuPainter {
       item,
       item.xPosition,
       yPos,
-      devicePixelRatio,
     );
 
     item.drawTick = tick;

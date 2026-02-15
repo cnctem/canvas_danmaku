@@ -16,7 +16,6 @@ final class SpecialDanmakuPainter extends BaseDanmakuPainter {
     required super.fontSize,
     required super.fontWeight,
     required super.strokeWidth,
-    required super.devicePixelRatio,
     required super.running,
     required super.tick,
     super.batchThreshold,
@@ -71,7 +70,6 @@ final class SpecialDanmakuPainter extends BaseDanmakuPainter {
         fontWeight: fontWeight,
         fontFamily: null, // fontFamily is not needed here as the image is already created
         strokeWidth: strokeWidth,
-        devicePixelRatio: devicePixelRatio,
       ),
       dx,
       dy,
